@@ -22,32 +22,11 @@ export default {
     }
   },
   computed: {
-    storedValue: function () {
-      if (this.inModal) return this.modalFieldValueByName(this.getFieldName())
-      else return this.fieldValueByName(this.getFieldName())
-    },
-    ...mapGetters([
-      'fieldValueByName',
-      'modalFieldValueByName'
-    ]),
     ...mapState({
       submitting: state => state.form.loading,
       fields: state => state.form.fields, // Fields in the form
       modalFields: state => state.form.modalFields // Fields in the create/edit modal
     })
-  },
-  watch: {
-    storedValue: function (fieldInstore) {
-      if (this.inStore === '') return
-
-      const currentValue = this[this.inStore]
-      const newValue = (this.locale) ? fieldInstore[this.locale.value] : fieldInstore
-
-      // new value detected, let's update the UI (updateFromStore method need to be present into the component so the value is properly updated)
-      if (!isEqual(currentValue, newValue)) {
-        if (typeof this.updateFromStore !== 'undefined') this.updateFromStore(newValue)
-      }
-    }
   },
   methods: {
     getFieldName: function () {
