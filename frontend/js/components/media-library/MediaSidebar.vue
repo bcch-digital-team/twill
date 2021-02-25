@@ -250,10 +250,9 @@
     },
     methods: {
       copyLink: function (e) {
-        const url = e.currentTarget.getAttribute('href');
-        console.log(url);
+        const url = e.currentTarget.getAttribute('href')
 
-        this._copyToClipboard(url).then(this._showToast());
+        this._copyToClipboard(url).then(this._showToast())
       },
       deleteSelectedMediasValidation: function () {
         if (this.loading) return false
@@ -397,29 +396,29 @@
       },
       _copyToClipboard: function (textToCopy) {
         // text area method
-        let textArea = document.createElement("textarea");
-        textArea.value = textToCopy;
+        const textArea = document.createElement('textarea')
+        textArea.value = textToCopy
         // make the textarea out of viewport
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        return new Promise((res, rej) => {
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-999999px'
+        textArea.style.top = '-999999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        return new Promise((resolve, reject) => {
           // here the magic happens
-          document.execCommand('copy') ? res() : rej();
-          textArea.remove();
-        });
+          document.execCommand('copy') ? resolve() : reject(new Error("Couldn't copy to clipboard"))
+          textArea.remove()
+        })
       },
       _showToast: function () {
-          var toast = document.querySelector('#link-copied-toast');
+        var toast = document.querySelector('#link-copied-toast')
 
-          toast.hidden = false;
+        toast.hidden = false
 
-          setTimeout(function(){ 
-              toast.hidden = true;
-            }, 1600);
+        setTimeout(function () {
+          toast.hidden = true
+        }, 1600)
       }
     }
   }
