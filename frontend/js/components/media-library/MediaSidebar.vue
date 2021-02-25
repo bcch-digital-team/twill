@@ -21,7 +21,7 @@
 
         <a17-buttonbar class="mediasidebar__buttonbar" v-if="hasMedia">
           <!-- Actions -->
-          <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
+          <a v-if="hasSingleMedia" :href="firstMedia.original" @click.prevent="copyLink"><span>Copy Link</span></a>
           <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation">
             <span v-svg symbol="trash"></span>
           </button>
@@ -113,6 +113,8 @@
         <a17-button variant="aslink" @click="$refs.warningDelete.close()"><span>Cancel</span></a17-button>
       </a17-inputframe>
     </a17-modal>
+
+    <div id="link-copied-toast" hidden>Link was copied!</div>
   </div>
 </template>
 
@@ -247,6 +249,12 @@
       })
     },
     methods: {
+      copyLink: function (e) {
+        const url = e.currentTarget.getAttribute('href');
+        console.log(url);
+
+        this._copyToClipboard(url).then(this._showToast());
+      },
       deleteSelectedMediasValidation: function () {
         if (this.loading) return false
 
@@ -386,6 +394,32 @@
             })
           }
         })
+      },
+      _copyToClipboard: function (textToCopy) {
+        // text area method
+        let textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        // make the textarea out of viewport
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        return new Promise((res, rej) => {
+          // here the magic happens
+          document.execCommand('copy') ? res() : rej();
+          textArea.remove();
+        });
+      },
+      _showToast: function () {
+          var toast = document.querySelector('#link-copied-toast');
+
+          toast.hidden = false;
+
+          setTimeout(function(){ 
+              toast.hidden = true;
+            }, 1600);
       }
     }
   }
@@ -467,5 +501,16 @@
   .mediasidebar__langswitcher {
     margin-top: 32px;
     margin-bottom: 32px;
+  }
+
+  div#link-copied-toast {
+    position:fixed;
+    bottom: 50px; right: 50px;
+    background-color: lightgreen;
+    margin: 5px;
+    padding: 10px;
+    font-weight: 600;
+    border: 1px solid lightgreen;
+    border-radius: 3px;
   }
 </style>
