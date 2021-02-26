@@ -250,9 +250,12 @@
     },
     methods: {
       copyLink: function (e) {
-        const url = e.currentTarget.getAttribute('href')
+        const protocol = window.location.protocol + '//'
+        const host = window.location.hostname
+        const aHref = e.currentTarget.getAttribute('href')
+        const fullUrl = this.type.value === 'image' ? protocol + host + aHref : aHref
 
-        this._copyToClipboard(url).then(this._showToast())
+        this._copyToClipboard(fullUrl).then(this._showToast())
       },
       deleteSelectedMediasValidation: function () {
         if (this.loading) return false
